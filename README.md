@@ -10,42 +10,41 @@ add "webpack_loader" in your INSTALLED_APPS
 
 creates a view for testing webpack config and edit base.html:
 exemple :
->
+```html
 {% load static %}
 {% load render_bundle from webpack_loader %}
 <html>
-<head>
-    <title>{% block title %}{% endblock %}</title>
-    {% render_bundle 'maincss' %}
-</head>
-<body>
-    {% block header %}{% endblock %}
-    {% block content %}{% endblock %}
-    {% render_bundle 'openlayers' 'js' %}
-    {% render_bundle 'leaflet' 'js' %}
-    {% render_bundle 'main' 'js' %}
-</body>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        {% render_bundle 'maincss' %}
+    </head>
+    <body>
+        {% block header %}{% endblock %}
+        {% block content %}{% endblock %}
+        {% render_bundle 'openlayers' 'js' %}
+        {% render_bundle 'leaflet' 'js' %}
+        {% render_bundle 'main' 'js' %}
+    </body>
 </html>
-
-load render_bundle from webpack_loader
+```
+{% load render_bundle from webpack_loader %}
 includ webpack_loader function
 
 {% render_bundle 'name' %}
 includ your files css or js
 
 
-in settings.py :
-
 creates filder : ./assets
 
->
+
+in settings.py :
+```python
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "node_modules"),
     os.path.join(BASE_DIR, "assets"),
 ]
 
-and add config :
->
+# and add WEBPACK_LOADER config :
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
@@ -56,16 +55,18 @@ WEBPACK_LOADER = {
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
     }
 }
+```
 
 webpack_bundles is in ./assets/webpack_bundles/
 webpack-stats.json is in ./webpack-stats.json
 
 ## config webpack :
->npm install webpack webpack-bundle-tracker babel babel-loader babel-core babel-preset-es2015 --save-dev
+>>npm install webpack webpack-bundle-tracker babel babel-loader babel-core babel-preset-es2015 --save-dev
 
 
 creates file webpack.config.js in ./
-`var path = require('path');
+```javascript
+var path = require('path');
 var webpack = require('webpack');
 var BundleTracker = require('webpack-bundle-tracker');
 
@@ -109,15 +110,16 @@ module.exports = {
   plugins: [
     new BundleTracker({filename: './webpack-stats.json'})
   ]
-}`
+}
+```
 
-import :
-> mode: 'production',
+important :
+>> mode: 'production',
 
 
 next create your entry name :
     exemple "maincss" is css file
-    >
+    >>
     entry: {
         maincss: './assets/css/scss/main.scss',
         ...
@@ -127,23 +129,24 @@ next create your entry name :
     {% render_bundle 'maincss' %}
 
 if your have scss and ES6 files config the rules :
-    >
-    module: {
-        rules: [{
-            test: /\.js$/,
-            exclude: /node_modules/,
-            loader: "babel-loader"
-          }],
-        rules: [{
-            test: /\.scss$/,
-            use: [
-                "style-loader", // creates style nodes from JS strings
-                "css-loader", // translates CSS into CommonJS
-                "sass-loader" // compiles Sass to CSS, using Node Sass by default
-            ]
-        }]
-    }
 
+```javascript
+module: {
+    rules: [{
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "babel-loader"
+      }],
+    rules: [{
+        test: /\.scss$/,
+        use: [
+            "style-loader", // creates style nodes from JS strings
+            "css-loader", // translates CSS into CommonJS
+            "sass-loader" // compiles Sass to CSS, using Node Sass by default
+        ]
+    }]
+}
+```
     the rules for file.js use
         babel_loader
     install :
@@ -155,7 +158,7 @@ if your have scss and ES6 files config the rules :
         > npm install style-loader css-loader sass-loader node-sass webpack --save-dev
 
 NOW RUN !!!!
->./node_modules/.bin/webpack --config webpack.config.js --watch
-
+```bash
+    ./node_modules/.bin/webpack --config webpack.config.js --watch
+```
 (the file webpack-stats.json contant webpack errors)
-# Django-Webpack
